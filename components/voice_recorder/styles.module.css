@@ -1,0 +1,16 @@
+.AudioRecorderClass {
+    min-width: 100px;
+    min-height: 50px;
+    background-color: white !important;
+    box-shadow: 0 0px 0px #bebebe !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.AudioRecorderStartSaveClass{
+    width: 70%;
+    background-color: white;
+    box-shadow: none;
+    height: 30px !important;
+    padding: 0px !important;
+}
