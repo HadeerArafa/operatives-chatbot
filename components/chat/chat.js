@@ -97,8 +97,7 @@ function Chat() {
 
         const effect = async () => {
             const [res, states_code] = await call_mediator2(`${request_url}/messages/get_history?user_id=${session.user.user_id}`, 'GET')
-            var msgs = res.messages
-
+            var msgs = res.messages    
             setmssg(msgs)
         }
         effect()
@@ -121,8 +120,8 @@ function Chat() {
         scrollTo(myRef)
     }, [key_2])
 
-    const handleFAQClick = (faqTitle) => {
-        send_message2(faqTitle); // Send the FAQ message when clicked
+    const handleFAQClick = (faqTitle,fqa_id) => {
+        send_message2(faqTitle,fqa_id); // Send the FAQ message when clicked
     };
 
     const show_messages = () => {
@@ -150,7 +149,7 @@ function Chat() {
                             {/* Group of buttons to display message dates */}
                             <div className="buttonGroup">
                                 {ele?.message_date && ele.message_date.map((dateObj, index) => (
-                                    <button key={index} className="dateButton" onClick={() => handleFAQClick(dateObj.question)}>
+                                    <button key={index} className="dateButton" onClick={() => handleFAQClick(dateObj.question,dateObj.question_id)}>
                                             <div key={i}>
                                                 <p>{dateObj["question"]}</p> 
                                             </div>
@@ -222,7 +221,7 @@ function Chat() {
 
     }
 
-    const send_message2 = async (fqa) => {
+    const send_message2 = async (fqa,fqa_id) => {
     
         const customer_title = fqa
         msgref.current.value = ""
@@ -243,11 +242,12 @@ function Chat() {
 
 
 
-        call_mediator2(`${request_url}/messages/get_message`, "POST", {
+        call_mediator2(`${request_url}/messages/get_similar_qeustion_answer`, "POST", {
             "type": "text",
             "title": customer_title,
             "user_id": session.user.user_id,
-            "company_id": session.user.company_id,
+            "question_id":fqa_id
+            
         }).then(([data, res]) => {
             if (res === 200) {
                 console.log("returned data",data)
