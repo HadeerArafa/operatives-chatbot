@@ -14,6 +14,7 @@ import styles from "./style.module.css"
 import ImageUpload from "./upload_img"
 import MsgText from "./msgs_types/text"
 import ListMsg from "./msgs_types/list"
+import MsgHtml from "./msgs_types/html"
 import QueryMsg from "./msgs_types/query"
 import Recorder from "../voice_recorder/voice_recorder_btn"
 import FAQMsg from './msgs_types/faq'
@@ -28,8 +29,9 @@ async function wait() {
 
 
 
-function Chat() {
+function Chat({ state }) {
 
+    const logo_name = state==="pdf"?"logo_oracle.jpg":"logo_oper.jpg"
     const [session, setSession] = useState(null)
     const [btn_send_disabeld, setbtn_send_disabeld] = useState(false)
     const [imageBase64, setImageBase64] = useState('');
@@ -70,8 +72,8 @@ function Chat() {
 
 
         const effect = async () => {
-            const [res, states_code] = await call_mediator2(`${request_url}/messages/get_history?user_id=${session.user.user_id}`, 'GET')
-            var msgs = res.messages    
+            const [res, states_code] = await call_mediator2(`${request_url}/${state}/get_history?user_id=${session.user.user_id}`, 'GET')
+            var msgs = res.messages
             setmssg(msgs)
         }
         effect()
@@ -82,14 +84,14 @@ function Chat() {
 
     useEffect(() => {
 
-        if (msssg.length === 0) return;
+        if (msssg?.length === 0) return;
 
-        if (first_enter){
+        if (first_enter) {
 
             myRef.current.scrollIntoView({ behavior: 'auto', block: "end" });
             setfirst_enter(false)
 
-        }else{
+        } else {
 
             if (myRef.current) {
 
@@ -99,11 +101,11 @@ function Chat() {
 
         }
 
-        
+
     }, [msssg]);
 
-    const handleFAQClick = (faqTitle,fqa_id) => {
-        send_message2(faqTitle,fqa_id); // Send the FAQ message when clicked
+    const handleFAQClick = (faqTitle, fqa_id) => {
+        send_message2(faqTitle, fqa_id); // Send the FAQ message when clicked
     };
 
     const TypingAnimation = () => {
@@ -112,7 +114,9 @@ function Chat() {
 
             <div className="msg_container" key={0} >
                 {/* <img src="./images/logo.png"></img> */}
-                <img src="./images/logo.jpg"></img>
+
+                <img src={`./images/${logo_name}`}></img>
+
                 <div style={{ display: "flex", flexDirection: "column", width: "90%" }}>
                     <div className="msg">
                         <div className="typing-animation">
@@ -127,45 +131,53 @@ function Chat() {
     };
 
     const show_messages = () => {
-        if(msssg?.length === 0){
+        console.log("--------------------------------------------------")
+        console.log(msssg)
+        if (msssg?.length === 0) {
             return TypingAnimation()
         }
         return (msssg?.map((ele, i) => {
-            console.log("ele",ele)
+            console.log("ele", ele)
             if (ele?.type === "string") {
-                return (<MsgText i={i} key={i} ele={ele} len={msssg.length} />)
+                return (<MsgText i={i} key={i} ele={ele} len={msssg.length}  logo_name={logo_name}/>)
             } else if (ele?.type === "list") {
-                return (<ListMsg i={i} key={i} ele={ele} len={msssg.length} />)
-            } 
-            else if(ele?.type === "query" && ele?.title !=null){
+                return (<ListMsg i={i} key={i} ele={ele} len={msssg.length} logo_name={logo_name} />)
+            }
+            else if (ele?.type === "query" && ele?.title != null) {
                 // return (<QueryMsg i={i} key={i} ele={ele} len={msssg.length} />)
             }
-            else if(ele?.type === "faq"){
+            else if (ele?.type === "faq") {
                 // return (<FAQMsg i={i} key={i} ele={ele} len={msssg.length} />)
 
                 return (
-                    <div className="msg_container" key={i} style={{marginLeft:"2.5rem"}}>
+                    <div className="msg_container" key={i} style={{ marginLeft: "2.5rem" }}>
                         {/* <img src="./images/qparts-logo.png" alt="Logo" /> */}
                         <div className={`${i + 1 === msssg.length ? "message-pop" : ""}`} style={{ display: "flex", flexDirection: "column", width: "90%" }}>
                             <div className={`msg ${ele.title === '...' ? "typing-animation" : ""}`}>
-                              
-                           
-            
-                            {/* Group of buttons to display message dates */}
-                            <div className="buttonGroup">
-                                {ele?.message_date && ele.message_date.map((dateObj, index) => (
-                                    <button key={index} className="dateButton" onClick={() => handleFAQClick(dateObj.question,dateObj.question_id)}>
+
+
+
+                                {/* Group of buttons to display message dates */}
+                                <div className="buttonGroup">
+                                    {ele?.message_date && ele.message_date.map((dateObj, index) => (
+                                        <button key={index} className="dateButton" onClick={() => handleFAQClick(dateObj.question, dateObj.question_id)}>
                                             <div key={i}>
-                                                <p>{dateObj["question"]}</p> 
+                                                <p>{dateObj["question"]}</p>
                                             </div>
-                                      
-                                    </button>
-                                ))}
-                            </div>
+
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
                 );
+
+            }
+            else if (ele?.type === "html") {
+
+                return (<MsgHtml i={i} key={i} ele={ele} len={msssg.length} logo_name={logo_name}/>)
+
             }
 
 
@@ -197,21 +209,27 @@ function Chat() {
 
 
 
-        call_mediator2(`${request_url}/messages/get_message`, "POST", {
+        call_mediator2(`${request_url}/${state}/get_message`, "POST", {
             "type": "text",
             "title": customer_title,
             "user_id": session.user.user_id,
             "company_id": session.user.company_id,
         }).then(([data, res]) => {
             if (res === 200) {
-                console.log("returned data",data)
+                console.log("returned data", data)
 
-                setmssg([...(all_msgs.slice(0, -3)), ...data.messages,, {
+                if (state === "pdf"){ // -2 for pdf , -3 fornormal messages ( why , i dont know !)
+                    var temp_msgs = all_msgs.slice(0, -2)
+                }else{
+                    var temp_msgs = all_msgs.slice(0, -3)
+                }
+                
+                setmssg([...temp_msgs, ...data.messages, , {
                     message_date: data.messages.pop().message_date,
                     sent_by_customer: false, title: data.query_msg, type: "query"
                 },
-                {message_date:data.most_freq_questions,send_by_customer:false,type:"faq" ,title: "Frequency Asked Question",}
-            ])
+                { message_date: data.most_freq_questions, send_by_customer: false, type: "faq", title: "Frequency Asked Question", }
+                ])
 
 
 
@@ -226,8 +244,8 @@ function Chat() {
 
     }
 
-    const send_message2 = async (fqa,fqa_id) => {
-    
+    const send_message2 = async (fqa, fqa_id) => {
+
         const customer_title = fqa
         msgref.current.value = ""
         const temp_customer_msg = {
@@ -247,22 +265,22 @@ function Chat() {
 
 
 
-        call_mediator2(`${request_url}/messages/get_similar_qeustion_answer`, "POST", {
+        call_mediator2(`${request_url}/${state}/get_similar_qeustion_answer`, "POST", {
             "type": "text",
             "title": customer_title,
             "user_id": session.user.user_id,
-            "question_id":fqa_id
-            
+            "question_id": fqa_id
+
         }).then(([data, res]) => {
             if (res === 200) {
-                console.log("returned data",data)
+                console.log("returned data", data)
 
-                setmssg([...(all_msgs.slice(0, -3)), ...data.messages,, {
+                setmssg([...(all_msgs.slice(0, -3)), ...data.messages, , {
                     message_date: data.messages.pop().message_date,
                     sent_by_customer: false, title: data.query_msg, type: "query"
                 },
-                {message_date:data.most_freq_questions,send_by_customer:false,type:"faq" ,title: "Frequency Asked Question",}
-            ])
+                { message_date: data.most_freq_questions, send_by_customer: false, type: "faq", title: "Frequency Asked Question", }
+                ])
 
 
 
@@ -282,7 +300,7 @@ function Chat() {
         <div className='chat_container' style={{ position: "relative" }}>
             <div className="head-text " >
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", marginRight: "30px" }}>
-                     Opera
+                    Opera {state==="pdf"? "Payables":""}
                     <p>(Online)</p>
                 </div>
                 <div>

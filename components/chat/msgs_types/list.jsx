@@ -7,7 +7,7 @@ import HideSourceIcon from '@mui/icons-material/HideSource';
 import { useState } from 'react'
 
 
-function ListMsg({ ele, i, len }) {
+function ListMsg({ ele, i, len ,logo_name}) {
     const [show, set_show] = useState(false)
 
     const create_table = (ele) => {
@@ -64,7 +64,7 @@ function ListMsg({ ele, i, len }) {
         return (
             <div className="msg_container" key={i} >
                 {/* <img src="./images/logo.png"></img> */}
-                <img src="./images/logo.jpg"></img>
+                <img src={`./images/${logo_name}`}></img>
                 <div className={`${i + 1 == len ? "message-pop" : ""}`} style={{ display: "flex", flexDirection: "column", width: "90%" }}>
 
                     <div style={{ display: "flex", alignItems: "center" }}>

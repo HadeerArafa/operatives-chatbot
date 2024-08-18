@@ -3,13 +3,17 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import HideSourceIcon from '@mui/icons-material/HideSource';
 import { useState } from 'react'
 
-function MsgText({ ele, i, len ,logo_name}) {
+function MsgHtml({ ele, i, len  ,logo_name}) {
     const [show, set_show] = useState(false)
+
     if (ele.sent_by_customer === true) {
         return (
             <div className="msg_container_user" key={i} >
                 <div className={`msg ${i + 1 == len ? "message-pop" : ""}`} >
-                    <span dir='rtl' style={{ wordWrap: "break-word" }}>{ele.title}</span>
+                    <span dir='rtl' style={{ wordWrap: "break-word" }}>
+                        <div dangerouslySetInnerHTML={{ __html: ele.title }}></div>
+                    </span>
+
 
                 </div>
             </div>
@@ -22,7 +26,9 @@ function MsgText({ ele, i, len ,logo_name}) {
                 <div className={`${i + 1 == len ? "message-pop" : ""} `} style={{ display: "flex", flexDirection: "column", width: "90%" }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <div className={`msg ${ele.title == '...' ? "typing-animation" : ""}`} >
-                            <span className={`${ele.title == '...' && i + 1 == len ? "dots" : ""}`} dir='rtl' style={{ wordWrap: "break-word" }}>{ele.title} </span>
+                            <span className={`${ele.title == '...' && i + 1 == len ? "dots" : ""}`} dir='ltr' style={{ wordWrap: "break-word" }}>
+                                <div dangerouslySetInnerHTML={{ __html: ele.title }}></div>
+                            </span>
                         </div>
                         {
                             ele.sql_query == "None" ? "" :
@@ -55,4 +61,4 @@ function MsgText({ ele, i, len ,logo_name}) {
     }
 }
 
-export default MsgText
+export default MsgHtml

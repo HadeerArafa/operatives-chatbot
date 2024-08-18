@@ -69,7 +69,7 @@ function Home() {
 
                
                 {/* OCR Button */}
-                <button className="btn" onClick={() => { router.replace("/sheet") }}>
+                <button className="btn" onClick={() => { router.replace("/chat?state=pdf") }}>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                         <TbScanEye style={{ width: "24px", height: "24px",  }} />
                         <span style={{ marginLeft: "8px" }}>PDF</span>

@@ -214,7 +214,7 @@ function Chat() {
     const TypingAnimation = () => {
         return (
             <div className="msg_container" key={0} >
-                <img src="./images/logo.jpg"></img>
+                <img src={`./images/${logo_name}`}></img>
                 <div style={{ display: "flex", flexDirection: "column", width: "90%" }}>
                     <div className="msg">
                         <div className="typing-animation">

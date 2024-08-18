@@ -4,43 +4,46 @@ import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router.js';
 import { useEffect } from 'react';
 import { useState } from 'react';
-// export const getServerSideProps = async (ctx) => {
-//   const session = await getSession({ req: ctx.req })
-//   if (!session) {
-//       return {
-//           redirect: {
-//               destination: '/auth',
-//               permanent: false,
-//           }
-//       }
-//   }
-//   return {
-//       props:{
 
-//       }
-//   }
+export const getServerSideProps = async (ctx) => {
 
-// }
+  const { state } = ctx.query;
 
-function Chat_page() {
+  var final_state = state
+
+  if ( final_state !== "pdf" ){
+    final_state = "messages"
+  }
+
+  return {
+    props: {
+      state: final_state , // Pass the state parameter, or null if not present
+    },
+  };
+
+}
+
+function Chat_page({ state }) {
+
+
   const router = useRouter()
-  const [session,setsession] = useState(null)
+  const [session, setsession] = useState(null)
 
   useEffect(() => {
 
     if (JSON.parse(localStorage.getItem('session')) === null) {
       router.replace("/auth")
-    } else{
+    } else {
       setsession(JSON.parse(localStorage.getItem('session')))
     }
-    
+
   }, [])
-  if(session !== null){
+  if (session !== null) {
     return (
-      <Chat />
+      <Chat state={state}/>
     )
   }
-  
+
 }
 
 export default Chat_page

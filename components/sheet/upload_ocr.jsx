@@ -118,10 +118,10 @@ const ImageUpload = ({ session, setrows, setbill_id }) => {
         <div className={styles.upload} >
             {!selectedImage ?
                 < div style={{ display: "flex", width: "100%", flexDirection: "column", alignItems: "center" }}>
-                    <div >
+                    {/* <div >
                         <Select style={{ marginTop: "20px" }} options={options} onChange={(e) => setvalue_option(e[0]["value"])} />
 
-                    </div>
+                    </div> */}
                     <div {...getRootProps()} className={styles.dropzoneStyles}>
                         <input {...getInputProps()} />
                         <p style={{ color: 'black', fontWeight: "bold" }}>Drag & drop your pdf here, or click to select one</p>

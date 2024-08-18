@@ -38,7 +38,7 @@ function Index() {
   }, [])
   useEffect(() => {
     if (rows?.length === 0) return;
-    set_key_(key_+1)
+    set_key_(key_ + 1)
     setcols(Object.keys(rows[0]))
     setsend(true)
   }, [rows])
@@ -75,7 +75,7 @@ function Index() {
     new_rows[row_i][col_key] = val
     setrows(new_rows)
   }
-  const handleChnage = async (e , index_row, col_key ) => {
+  const handleChnage = async (e, index_row, col_key) => {
     update(index_row, col_key, e.target.value)
 
   };
@@ -119,7 +119,7 @@ function Index() {
   }
   const exportToCSV = async () => {
 
-    if(!send){toast.info("you already saved it!");return};
+    if (!send) { toast.info("you already saved it!"); return };
     const csvData = Papa.unparse(rows);
     const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -163,25 +163,25 @@ function Index() {
   return (
     <div className={styles.ocr_container}>
       <div className="head-text">
-      <div style={{display:"flex" , flexDirection:"column" , alignItems:"center" , width:"100%" , marginRight:"30px"}}>
-           Opera
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", marginRight: "30px" }}>
+          Opera
           <p>(Online)</p>
         </div>
         <div>
-          <IoArrowBackOutline style={{ width: "24px", height: "24px" , cursor:"pointer" }} onClick={() => { router.replace("/home") }} />
+          <IoArrowBackOutline style={{ width: "24px", height: "24px", cursor: "pointer" }} onClick={() => { router.replace("/home") }} />
 
 
         </div>
 
       </div>
 
-     <div className={styles.ocr_body_container}>
-      <ImageUpload session={session} setrows={setrows} setbill_id={setbill_id} />
+      <div className={styles.ocr_body_container}>
+        <ImageUpload session={session} setrows={setrows} setbill_id={setbill_id} />
 
-      <div className='ocr_table' style={{ width: "100vw" }}>
+        <div className='ocr_table' style={{ width: "100vw" }}>
 
-        <div >
-          {/* <table className={styles.table}>
+          <div >
+            {/* <table className={styles.table}>
                         <thead>
                             <tr></tr>
                         </thead>
@@ -189,7 +189,7 @@ function Index() {
                             {show_rows()}
                         </tbody>
                     </table> */}
-          {/* <TableContainer component={Paper}>
+            {/* <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
       <TableHead>
       <TableRow>
@@ -225,17 +225,17 @@ function Index() {
       </Table>
     </TableContainer> */}
 
-            <CustomTable cols={cols} rows={rows} handleChange={handleChnage} key_={key_}/>
-
-        </div>
-
-        {rows.length > 0 ?
-          <div className='mt-3' style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
-            <button className='btn btn-success' onClick={() => { exportToCSV() }}>Save and download</button>
+            <CustomTable cols={cols} rows={rows} handleChange={handleChnage} key_={key_} />
 
           </div>
-          : ""}
-      </div>
+
+          {rows.length > 0 ?
+            <div className='mt-3' style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
+              <button className='btn btn-success' onClick={() => { exportToCSV() }}>Save and download</button>
+
+            </div>
+            : ""}
+        </div>
       </div>
     </div>
   )
