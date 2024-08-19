@@ -35,7 +35,7 @@ function Chat({ state }) {
     const [session, setSession] = useState(null)
     const [btn_send_disabeld, setbtn_send_disabeld] = useState(false)
     const [imageBase64, setImageBase64] = useState('');
-
+    
 
 
     useEffect(() => {
@@ -54,7 +54,7 @@ function Chat({ state }) {
     const [msssg, setmssg] = useState([])
     const [first_enter, setfirst_enter] = useState(true)
 
-
+    const [key_ui , set_key_ui] = useState(0)
 
     useEffect(() => {
         if (session === null) return;
@@ -75,6 +75,7 @@ function Chat({ state }) {
             const [res, states_code] = await call_mediator2(`${request_url}/${state}/get_history?user_id=${session.user.user_id}`, 'GET')
             var msgs = res.messages
             setmssg(msgs)
+            set_key_ui(key_ui+1)
         }
         effect()
 
@@ -312,7 +313,7 @@ function Chat({ state }) {
             </div>
 
             <div className="chat_body" style={{ display: "flex", flexDirection: "column", width: "100%", height: "85%", overflowY: "scroll", paddingTop: "10px" }}>
-                <div ref={myRef}>
+                <div key={key_ui} ref={myRef}>
                     {
                         show_messages()
                     }

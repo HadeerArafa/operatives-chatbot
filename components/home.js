@@ -71,7 +71,8 @@ function Home() {
                 {/* OCR Button */}
                 <button className="btn" onClick={() => { router.replace("/chat?state=pdf") }}>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <TbScanEye style={{ width: "24px", height: "24px",  }} />
+                        {/* <TbScanEye style={{ width: "24px", height: "24px",  }} /> */}
+                        <img style={{marginLeft:"7px"}} src={`./images/logo_oracle.jpg`} width="30px" height="30px"></img>
                         <span style={{ marginLeft: "8px" }}>PDF</span>
                     </div>
                 </button>
